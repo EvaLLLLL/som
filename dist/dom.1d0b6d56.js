@@ -118,20 +118,87 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"dom.js":[function(require,module,exports) {
-window.dom = {
+var _window$som;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+window.som = (_window$som = {
+  create: function create(string) {
+    var container = document.createElement("template");
+    container.innerHTML = string.trim();
+    return container.content.firstChild;
+  },
+  after: function after(node, node2) {
+    node.parentNode.insertBefore(node2, node.nextSibling);
+  },
+  before: function before(node, node2) {
+    node.parentNode.insertBefore(node2, node);
+  },
+  append: function append(parent, node) {
+    parent.appendChild(node);
+  },
+  wrap: function wrap(node, parent) {
+    som.before(node, parent);
+    som.append(parent, node);
+  },
   find: function find(selector, scope) {
     return (scope || document).querySelectorAll(selector);
   },
+  remove: function remove(node) {
+    node.parentNode.removeChild(node);
+    return node;
+  },
+  empty: function empty(node) {
+    var childNodes = node.childNodes;
+    var arr = [];
+    var firstChild = node.firstChild;
+
+    while (firstChild) {
+      arr.push(som.remove(node.firstChild));
+      firstChild = node.firstChild;
+    }
+
+    return arr;
+  },
+  attr: function attr(node, name, value) {
+    if (arguments.length === 3) {
+      node.setAttribute(name, value);
+    } else {
+      return node.getAttribute(name);
+    }
+  },
+  text: function text(node, string) {
+    if (arguments.length === 2) {
+      if ("innerText" in node) {
+        node.innerText = string;
+      } else {
+        node.textContent = string;
+      }
+    } else if (arguments.length === 1) {
+      if ("innerText" in node) {
+        return node.innerText;
+      } else {
+        return node.textContent;
+      }
+    }
+  },
+  html: function html(node, string) {
+    if (arguments.length === 2) {
+      node.innerHTML = string;
+    } else if (arguments.length === 1) {
+      return node.innerHTML;
+    }
+  },
   style: function style(node, name, value) {
     if (arguments.length === 3) {
-      //dom.style(div, "color", "red")
+      //som.style(div, "color", "red")
       node.style[name] = value;
     } else if (arguments.length === 2) {
       if (typeof name === "string") {
-        //dom.style(div, "color")
+        //som.style(div, "color")
         return node.style[name];
       } else if (name instanceof Object) {
-        //dom.style(div, {color: "red"})
+        //som.style(div, {color: "red"})
         var object = name;
 
         for (var key in object) {
@@ -144,9 +211,95 @@ window.dom = {
     for (var i = 0; i < nodeList.length; i++) {
       fn.call(null, nodeList[i]);
     }
+  },
+  class: {
+    add: function add(node, className) {
+      node.classList.add(className);
+    },
+    remove: function remove(node, className) {
+      node.classList.remove(className);
+    },
+    has: function has(node, className) {
+      return node.classList.contains(className);
+    }
+  },
+  on: function on(node, eventName, fn) {
+    node.addEventListener(eventName, fn);
+  },
+  off: function off(node, eventName, fn) {
+    node.removeEventListener(eventName, fn);
   }
-};
-},{}],"../../../../../.config/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+}, _defineProperty(_window$som, "find", function find(selector, scope) {
+  return (scope || document).querySelectorAll(selector);
+}), _defineProperty(_window$som, "parent", function parent(node) {
+  return node.parentNode;
+}), _defineProperty(_window$som, "children", function children(node) {
+  return node.children;
+}), _defineProperty(_window$som, "siblings", function siblings(node) {
+  return Array.from(node.parentNode.children).filter(function (n) {
+    return n !== node;
+  });
+}), _defineProperty(_window$som, "next", function next(node) {
+  var x = node.nextSibling;
+
+  while (x && x.nodeType === 3) {
+    x = x.nextSibling;
+  }
+
+  return x;
+}), _defineProperty(_window$som, "previous", function previous(node) {
+  var x = node.previousSibling;
+
+  while (x && x.nodeType === 3) {
+    x = x.previousSibling;
+  }
+
+  return x;
+}), _defineProperty(_window$som, "each", function each(nodeList, fn) {
+  for (var i = 0; i < nodeList.length; i++) {
+    fn.call(null, nodeList[i]);
+  }
+}), _defineProperty(_window$som, "index", function index(node) {
+  var list = som.children(node.parentNode);
+  var i;
+
+  for (i = 0; i < list.length; i++) {
+    if (list[i] === node) {
+      break;
+    }
+  }
+
+  return i;
+}), _defineProperty(_window$som, "drag", function drag(node, initialTop, initialLeft) {
+  node.style.position = "absolute";
+  node.style.top = initialTop + 'px';
+  node.style.left = initialLeft + 'px';
+  var dragging = false;
+  var position = null;
+  node.addEventListener("mousedown", function (e) {
+    dragging = true;
+    position = [e.clientX, e.clientY];
+  });
+  document.addEventListener("mousemove", function (e) {
+    if (dragging === false) {
+      return;
+    }
+
+    var x = e.clientX;
+    var y = e.clientY;
+    var deltaX = x - position[0];
+    var deltaY = y - position[1];
+    var left = parseInt(node.style.left || 0);
+    var top = parseInt(node.style.top || 0);
+    node.style.left = left + deltaX + "px";
+    node.style.top = top + deltaY + "px";
+    position = [x, y];
+  });
+  document.addEventListener("mouseup", function (e) {
+    dragging = false;
+  });
+}), _window$som);
+},{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -174,7 +327,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60754" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54212" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -350,5 +503,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js","dom.js"], null)
+},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","dom.js"], null)
 //# sourceMappingURL=/dom.1d0b6d56.js.map

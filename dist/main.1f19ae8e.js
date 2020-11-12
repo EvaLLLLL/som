@@ -118,17 +118,28 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"main.js":[function(require,module,exports) {
-// const div = dom.find("#test")[0]
-// dom.style(div, "color", "red")
-// const div3 = dom.find("#t3")[0]
-// dom.style(div3, "color", "red")
-// const n = dom.style(div3, "color")
-// console.log(n)
-// const div3 = dom.find("#t3")[0]
-// dom.style(div3, {color: "yellow"})
-// const divList = dom.find(".red")
-// dom.each(divList, (n) => console.log(n))
-},{}],"../../../../../.config/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+// 元素选择
+var test = som.find("#test")[0];
+var t1 = som.find("#t1")[0];
+var t2 = som.find("#t2")[0];
+var t3 = som.find("#t3")[0]; // 元素创建
+
+var t4 = som.create("t4");
+var dragger = som.create("<div>dragger</div>");
+som.append(test, t4);
+som.after(test, dragger); // 事件委托
+
+som.on(test, "click", function (e) {
+  console.log(som.text(e.target));
+}); // 增加样式
+
+som.style(dragger, "border", "1px solid red");
+som.style(dragger, "cursor", "pointer");
+som.style(dragger, "width", "75px");
+som.style(dragger, "height", "75px"); // 变成可拖拽
+
+som.drag(dragger, 8, 75);
+},{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -156,7 +167,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60754" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54212" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -332,5 +343,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js","main.js"], null)
+},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main.js"], null)
 //# sourceMappingURL=/main.1f19ae8e.js.map
